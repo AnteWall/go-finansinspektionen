@@ -14,7 +14,7 @@ type Transaction struct {
 	PersonDischargingManagerialResponsibilities string    `csv:"Person discharging managerial responsibilities"`
 	Responsibilities                            string    `csv:"Responsibilities"`
 	Position                                    string    `csv:"Position"`
-	CloselyAssociated                           string    `csv:"Closely associated"`
+	CloselyAssociated                           YesNoBool `csv:"Closely associated"`
 	Amendment                                   YesNoBool `csv:"Amendment"`
 	DetailsOfAmendment                          string    `csv:"Details of amendment"`
 	InitialNotification                         YesNoBool `csv:"Initial notification"`
@@ -39,7 +39,7 @@ func (f *Transaction) MarshalLogObject(enc zapcore.ObjectEncoder) error {
 	enc.AddString("PersonDischargingManagerialResponsibilities", f.PersonDischargingManagerialResponsibilities)
 	enc.AddString("Responsibilities", f.Responsibilities)
 	enc.AddString("Position", f.Position)
-	enc.AddString("CloselyAssociated", f.CloselyAssociated)
+	enc.AddBool("CloselyAssociated", bool(f.CloselyAssociated))
 	enc.AddBool("Amendment", bool(f.Amendment))
 	enc.AddString("DetailsOfAmendment", f.DetailsOfAmendment)
 	enc.AddBool("InitialNotification", bool(f.InitialNotification))

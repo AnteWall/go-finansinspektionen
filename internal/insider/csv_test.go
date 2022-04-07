@@ -1,9 +1,9 @@
 package insider
 
 import (
+	"github.com/AnteWall/go-finansinspektionen/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"go-finansinspektionen/test"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -50,7 +50,7 @@ func (suite *InsiderCSVTestSuite) TestReadCSV_ParsesFieldsCorrectly() {
 	assert.Equal(suite.T(), "Marcus Benzon", data[0].Notifier)
 	assert.Equal(suite.T(), "", data[0].Responsibilities)
 	assert.Equal(suite.T(), "Other\u00a0senior\u00a0executive", data[0].Position)
-	assert.Equal(suite.T(), "", data[0].CloselyAssociated)
+	assert.Equal(suite.T(), false, bool(data[0].CloselyAssociated))
 	assert.Equal(suite.T(), false, bool(data[0].Amendment))
 	assert.Equal(suite.T(), "", data[0].DetailsOfAmendment)
 	assert.Equal(suite.T(), true, bool(data[0].InitialNotification))

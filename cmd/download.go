@@ -14,8 +14,8 @@ import (
 	"time"
 )
 
-// downloadCmd represents the download command
-var downloadCmd = &cobra.Command{
+// DownloadCmd represents the download command
+var DownloadCmd = &cobra.Command{
 	Use:   "download",
 	Short: "Downloads historical insider data",
 	Long: `Downloads historical insider data from Finansinspektions insynsregister. 
@@ -39,7 +39,7 @@ It will download data split daily for each day. Todays date will be all availabl
 		tomorrow := time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 0, 0, 0, 0, endTime.Location()).AddDate(0, 0, 1)
 		for curr := startTime; curr.Before(tomorrow); curr = curr.AddDate(0, 0, 1) {
 			output := fmt.Sprintf("%s/%s.csv", Output, curr.Format("2006-01-02"))
-			logger.With(zap.Time("date", curr),zap.String("output", output)).Info("downloading file")
+			logger.With(zap.Time("date", curr), zap.String("output", output)).Info("downloading file")
 			t, err := client.GetTransactions(curr)
 			if err != nil {
 				logger.Fatal(err)
@@ -57,16 +57,16 @@ var (
 	Output       string
 	StrStartTime string
 	StrEndTime   string
-	Debug bool
+	Debug        bool
 )
 
 func init() {
-	rootCmd.AddCommand(downloadCmd)
+	RootCmd.AddCommand(DownloadCmd)
 
-	downloadCmd.Flags().StringVarP(&Output, "output", "o", "", "Output folder")
-	downloadCmd.MarkFlagRequired("output")
-	downloadCmd.Flags().StringVarP(&StrStartTime, "startdate", "s", "", "Start date")
-	downloadCmd.MarkFlagRequired("startdate")
-	downloadCmd.Flags().StringVarP(&StrEndTime, "enddate", "e", "", "End date")
-	downloadCmd.Flags().BoolVarP(&Debug, "debug", "d", false, "debug http client")
+	DownloadCmd.Flags().StringVarP(&Output, "output", "o", "", "Output folder")
+	DownloadCmd.MarkFlagRequired("output")
+	DownloadCmd.Flags().StringVarP(&StrStartTime, "startdate", "s", "", "Start date")
+	DownloadCmd.MarkFlagRequired("startdate")
+	DownloadCmd.Flags().StringVarP(&StrEndTime, "enddate", "e", "", "End date")
+	DownloadCmd.Flags().BoolVarP(&Debug, "debug", "d", false, "debug http client")
 }

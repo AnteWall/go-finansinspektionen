@@ -2,15 +2,11 @@ package insider
 
 import (
 	"compress/gzip"
-	"encoding/csv"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/jszwec/csvutil"
 	"go-finansinspektionen/pkg/utils"
 	"go.uber.org/zap"
-	"golang.org/x/text/encoding/unicode"
 	"io"
-	"log"
 	"time"
 )
 
@@ -19,7 +15,7 @@ const LanguageEN string = "en-GB"
 
 func GetDefaultHeaders() map[string]string {
 	return map[string]string{
-		"Content-Type":    "text/csv",
+		"Content-Type":    "text/csv.go",
 		"Accept-Encoding": "gzip",
 		"User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0",
 	}
@@ -31,8 +27,8 @@ type insiderClient struct {
 	logger     *zap.SugaredLogger
 }
 
-func (i *insiderClient) request() error {
-	formattedDate := time.Now().String()
+func (i *insiderClient) request(date time.Time) ([]*Transaction, error) {
+	formattedDate := date.Format("2006-01-02")
 	get, err := i.httpClient.R().
 		SetHeaders(GetDefaultHeaders()).
 		SetQueryParam("button", "export").
@@ -44,7 +40,7 @@ func (i *insiderClient) request() error {
 			fmt.Sprintf("%s/%s/Search/Search", i.baseUrl, LanguageEN),
 		)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer get.RawBody().Close()
 
@@ -58,37 +54,15 @@ func (i *insiderClient) request() error {
 		print(get.Header().Get("Content-Encoding"))
 		reader = get.RawBody()
 	}
-	utf16Decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
-
-	csvReader := csv.NewReader(utf16Decoder.Reader(reader))
-	csvReader.Comma = ';'
-	csvReader.LazyQuotes = true
-	csvReader.FieldsPerRecord = -1
-	dec, err := csvutil.NewDecoder(csvReader)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var transactions []Transaction
-	for {
-		var t Transaction
-		if err := dec.Decode(&t); err == io.EOF {
-			break
-		} else if err != nil {
-			log.Fatal(err)
-		}
-		i.logger.Infow("hello", zap.Object("transaction", &t))
-		transactions = append(transactions, t)
-	}
-
-	return nil
+	return i.ReadCSV(i.decodeUTF16(reader))
 }
 
-func (i *insiderClient) GetLatestTrades() error {
-	err := i.request()
-	if err != nil {
-		return err
-	}
-	return nil
+func (i *insiderClient) GetTransactions(day time.Time) ([]*Transaction, error) {
+	return i.request(day)
+}
+
+func (i *insiderClient) GetTodayTransactions() ([]*Transaction, error) {
+	return i.GetTransactions(time.Now())
 }
 
 func NewClient(opts ...func(*insiderClient)) *insiderClient {

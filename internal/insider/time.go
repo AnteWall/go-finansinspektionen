@@ -1,7 +1,6 @@
 package insider
 
 import (
-	"github.com/jszwec/csvutil"
 	"time"
 )
 
@@ -9,7 +8,7 @@ type DateTime time.Time
 
 
 func (f DateTime) MarshalCSV() ([]byte, error) {
-	return csvutil.Marshal(f.GetTime())
+	return []byte(f.GetTime().Format(time.RFC3339)), nil
 }
 
 func (f *DateTime) UnmarshalCSV(data []byte) error {

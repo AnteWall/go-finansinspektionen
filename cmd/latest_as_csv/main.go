@@ -13,7 +13,12 @@ func main() {
 
 	client := insider.NewClient(insider.WithDebug(true))
 
-	err := client.GetLatestTrades()
+	t, err := client.GetTodayTransactions()
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	err = utils.SaveAsCSV("output/test-latest.csv", t)
 	if err != nil {
 		logger.Error(err)
 	}

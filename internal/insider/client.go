@@ -3,8 +3,8 @@ package insider
 import (
 	"compress/gzip"
 	"fmt"
+	"github.com/AnteWall/go-finansinspektionen/pkg/utils"
 	"github.com/go-resty/resty/v2"
-	"go-finansinspektionen/pkg/utils"
 	"go.uber.org/zap"
 	"io"
 	"time"

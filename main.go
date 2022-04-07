@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "go-finansinspektionen/cmd"
+import "github.com/AnteWall/go-finansinspektionen/cmd"
 
 func main() {
 	cmd.Execute()

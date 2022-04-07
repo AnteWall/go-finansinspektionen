@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/AnteWall/go-finansinspektionen/internal/insider"
+	"github.com/AnteWall/go-finansinspektionen/pkg/utils"
 	"github.com/joho/godotenv"
-	"go-finansinspektionen/internal/insider"
-	"go-finansinspektionen/pkg/utils"
 )
 
 func main() {

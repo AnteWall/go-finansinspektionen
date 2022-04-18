@@ -1,12 +1,8 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
 	"fmt"
-	"github.com/AnteWall/go-finansinspektionen/internal/insider"
+	"github.com/AnteWall/go-finansinspektionen/pkg/insider"
 	"github.com/AnteWall/go-finansinspektionen/pkg/utils"
 	"github.com/spf13/cobra"
 

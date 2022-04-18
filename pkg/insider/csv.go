@@ -7,12 +7,12 @@ import (
 	"io"
 )
 
-func (i *insiderClient) decodeUTF16(reader io.ReadCloser) io.Reader {
+func (i *Client) decodeUTF16(reader io.ReadCloser) io.Reader {
 	utf16Decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
 	return utf16Decoder.Reader(reader)
 }
 
-func (i *insiderClient) ReadCSV(reader io.Reader) ([]*Transaction, error) {
+func (i *Client) ReadCSV(reader io.Reader) ([]*Transaction, error) {
 	csvReader := csv.NewReader(reader)
 	csvReader.Comma = ';'
 	csvReader.LazyQuotes = true

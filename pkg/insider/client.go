@@ -21,13 +21,13 @@ func GetDefaultHeaders() map[string]string {
 	}
 }
 
-type insiderClient struct {
+type Client struct {
 	httpClient *resty.Client
 	baseUrl    string
 	logger     *zap.SugaredLogger
 }
 
-func (i *insiderClient) request(date time.Time) ([]*Transaction, error) {
+func (i *Client) request(date time.Time) ([]*Transaction, error) {
 	formattedDate := date.Format("2006-01-02")
 	get, err := i.httpClient.R().
 		SetHeaders(GetDefaultHeaders()).
@@ -57,18 +57,18 @@ func (i *insiderClient) request(date time.Time) ([]*Transaction, error) {
 	return i.ReadCSV(i.decodeUTF16(reader))
 }
 
-func (i *insiderClient) GetTransactions(day time.Time) ([]*Transaction, error) {
+func (i *Client) GetTransactions(day time.Time) ([]*Transaction, error) {
 	return i.request(day)
 }
 
-func (i *insiderClient) GetTodayTransactions() ([]*Transaction, error) {
+func (i *Client) GetTodayTransactions() ([]*Transaction, error) {
 	return i.GetTransactions(time.Now())
 }
 
-func NewClient(opts ...func(*insiderClient)) *insiderClient {
+func NewClient(opts ...func(*Client)) *Client {
 	httpClient := resty.New()
 	logger := utils.NewLogger()
-	c := &insiderClient{
+	c := &Client{
 		logger:     logger,
 		baseUrl:    DefaultBaseUrl,
 		httpClient: httpClient,
@@ -79,20 +79,20 @@ func NewClient(opts ...func(*insiderClient)) *insiderClient {
 	return c
 }
 
-func WithBaseUrl(url string) func(client *insiderClient) {
-	return func(client *insiderClient) {
+func WithBaseUrl(url string) func(client *Client) {
+	return func(client *Client) {
 		client.baseUrl = url
 	}
 }
 
-func WithLogger(logger *zap.SugaredLogger) func(client *insiderClient) {
-	return func(client *insiderClient) {
+func WithLogger(logger *zap.SugaredLogger) func(client *Client) {
+	return func(client *Client) {
 		client.logger = logger
 	}
 }
 
-func WithDebug(debug bool) func(client *insiderClient) {
-	return func(client *insiderClient) {
+func WithDebug(debug bool) func(client *Client) {
+	return func(client *Client) {
 		client.httpClient.SetDebug(debug)
 	}
 }

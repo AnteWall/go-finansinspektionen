@@ -6,9 +6,20 @@ import (
 
 type DateTime time.Time
 
-
 func (f DateTime) MarshalCSV() ([]byte, error) {
 	return []byte(f.GetTime().Format(time.RFC3339)), nil
+}
+
+func (f *DateTime) MarshalJSON() ([]byte, error) {
+	return f.GetTime().MarshalJSON()
+}
+
+func (f *DateTime) UnmarshalJSON(data []byte) error {
+	str := string(data)
+	println(str)
+	t, err := time.Parse(`"2006-01-02T15:04:05.999999999Z07:00"`, string(data))
+	*f = DateTime(t)
+	return err
 }
 
 func (f *DateTime) UnmarshalCSV(data []byte) error {
